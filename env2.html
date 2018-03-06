@@ -1,0 +1,140 @@
+<table id="w323aac71c23b4">
+                              <tbody><tr>
+                                 <th>Key</th>
+                                 <th>Reserved</th>
+                                 <th>Value</th>
+                              </tr>
+                              <tr>
+                                 <td>LAMBDA_TASK_ROOT</td>
+                                 <td>Yes</td>
+                                 <td>Contains the path to your Lambda function code.</td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_EXECUTION_ENV</td>
+                                 <td>Yes</td>
+                                 <td>The environment variable is set to one of the following options, depending on the
+                                    runtime
+                                    of the Lambda function: 
+                                    <div class="itemizedlist">
+                                       <ul class="itemizedlist" type="disc">
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_java8</p>
+                                          </li>
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_nodejs4.3</p>
+                                          </li>
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_nodejs6.10</p>
+                                          </li>
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_python2.7</p>
+                                          </li>
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_python3.6</p>
+                                          </li>
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_dotnetcore1.0</p>
+                                          </li>
+                                          <li class="listitem">
+                                             <p>AWS_Lambda_dotnetcore2.0</p>
+                                          </li>
+                                       </ul>
+                                    </div>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>LAMBDA_RUNTIME_DIR</td>
+                                 <td>Yes</td>
+                                 <td>Restricted to Lambda runtime-related artifacts. For example the aws-sdk for Node.js
+                                    and boto3 for Python can be found under this path.
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_REGION</td>
+                                 <td>Yes</td>
+                                 <td>The AWS region where the Lambda function is executed.</td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_DEFAULT_REGION</td>
+                                 <td>Yes</td>
+                                 <td>The AWS region where the Lambda function is executed.</td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_LAMBDA_LOG_GROUP_NAME</td>
+                                 <td>Yes</td>
+                                 <td>The name of Amazon CloudWatch Logs group where log streams containing your Lambda
+                                    function logs are created.
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_LAMBDA_LOG_STREAM_NAME</td>
+                                 <td>Yes</td>
+                                 <td>The Amazon CloudWatch Logs streams containing your Lambda function logs.</td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_LAMBDA_FUNCTION_NAME</td>
+                                 <td>Yes</td>
+                                 <td>The name of the Lambda function.</td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_LAMBDA_FUNCTION_MEMORY_SIZE</td>
+                                 <td>Yes</td>
+                                 <td>The size of the Lambda function in MB.</td>
+                              </tr>
+                              <tr>
+                                 <td>AWS_LAMBDA_FUNCTION_VERSION</td>
+                                 <td>Yes</td>
+                                 <td>The version of the Lambda function.</td>
+                              </tr>
+                              <tr>
+                                 <td>
+                                    <p>AWS_ACCESS_KEY</p>
+                                    <p>AWS_ACCESS_KEY_ID</p>
+                                    <p>AWS_SECRET_KEY</p>
+                                    <p>AWS_SECRET_ACCESS_KEY</p>
+                                    <p>AWS_SESSION_TOKEN</p>
+                                    <p>AWS_SECURITY_TOKEN</p>
+                                 </td>
+                                 <td>Yes</td>
+                                 <td>The security credentials required to execute the Lambda function, depending on which
+                                    runtime is used. Different runtimes 
+                                    use a subset of these keys. They are generated via an IAM execution role specified
+                                    for the function.
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>PATH</td>
+                                 <td>No</td>
+                                 <td>Contains /usr/local/bin, /usr/bin or /bin for running executables.</td>
+                              </tr>
+                              <tr>
+                                 <td>LANG</td>
+                                 <td>No</td>
+                                 <td>Set to en_US.UTF-8. This is the Locale of the runtime. </td>
+                              </tr>
+                              <tr>
+                                 <td>LD_LIBRARY_PATH</td>
+                                 <td>No</td>
+                                 <td>Contains /lib64, /usr/lib64, LAMBDA_TASK_ROOT, LAMBDA_TASK_ROOT/lib. Used to store
+                                    helper libraries and function code.
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>NODE_PATH</td>
+                                 <td>No</td>
+                                 <td>Set for the Node.js runtime. It contains LAMBDA_RUNTIME_DIR, LAMBDA_RUNTIME_DIR/node_modules,
+                                    LAMBDA_TASK_ROOT.
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td>PYTHONPATH</td>
+                                 <td>No</td>
+                                 <td>Set for the Python runtime. It contains LAMBDA_RUNTIME_DIR.</td>
+                              </tr>
+                              <tr>
+                                 <td>TZ</td>
+                                 <td>Yes</td>
+                                 <td>The current local time. Defaults to <a href="https://www.timeanddate.com/worldclock/timezone/utc" target="_blank">UTC</a>.
+                                 </td>
+                              </tr>
+                           </tbody></table>
