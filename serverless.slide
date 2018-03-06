@@ -1,0 +1,148 @@
+Gettin' Jiggy with Serverless 
+A closer look at AWS lambdas
+Tags: serverless, lambda, aws
+
+Douglas Chimento
+Outbrain Inc.
+dchimento@gmail.com
+https://www.dougchimento.com
+
+
+* Agenda
+- What?
+- Evolution
+- Examples
+- Internals
+- Pitfalls
+
+* What does serverless mean?
+
+- No Servers to provision or manage
+- Scale with usage
+- Built in fault-tolerance
+- Nerver pay for idle/unused capacity
+
+* What is AWS Lambda?
+ AWS Lambda is an event-driven compute service that runs code in response to events and automatically manages the compute resources required by that code
+ Supports:
+ -NodeJs
+ -Python
+ -Java (???)
+ -Go
+ -C#
+
+* Which events?
+- API Gateway (HTTP requests)
+- CloudFormation
+- Code Commit
+- Congito
+- DynamoDB
+- Kinesis
+- S3
+- SNS
+- AutoScalling
+
+* How do I use it?
+- Pick a language
+- Import AWS SDK dependency
+- Write a handler
+.image southpark.png 400 800
+
+* How do I deploy?
+- Build/Compile code
+- Create zip with all dependencies
+- Upload zip to s3
+- Use AWS console or AWS CLI to create lambda
+
+  aws lambda create-function \ 
+    --region us-west-2 \
+    --function-name lambdafn \
+    --zip-file s3://bucket/lambda.zip \
+    --handler main.helloword \
+    --runtime go1.x  \
+
+* How do I invoke?
+- AWS console or AWS cli
+
+  aws lambda invoke \
+    --invocation-type RequestResponse \
+    --function-name lambdafn \
+    --log-type Tail \
+    --payload '{"a":1, "b":2 }'
+
+* Limits
+.html limits.html
+
+* Pricing 
+.html limits.html
+
+* Internals 
+- lambdash
+- lambda-vm-info
+
+`$ lambdash cat /etc/issue
+Amazon Linux AMI release 2017.03
+`
+`lambdash uname -a                          
+Linux ip-10-11-95-175 4.9.81-35.56.amzn1.x86_64 #1 SMP Fri Feb 16 00:18:48 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux`
+` lambdash id 
+uid=488(sbx_user1059) gid=487 groups=487`
+`
+lambdash ps -ef              
+UID        PID  PPID  C STIME TTY          TIME CMD
+488          1     0  0 13:33 ?        00:00:00 /usr/local/lib64/node-v4.3.x/bin/node ...
+`
+
+* Lexicon
+- FaaS
+  Function as as service
+- Bass
+  Backend as as service
+
+* Evolution
+- Physical Servers
+- VMs
+- Containers
+- Serverless
+
+
+* Serverless runs on functions
+
+- Functions are the unit of deployment and scale
+- Skip .....
+
+
+* Lambda in action
+
+.background lambda_in_action.png
+.html lambda_in_action.html
+
+
+* Show me the code I
+.code example1.go
+
+* Show me the code II
+.code example2.go
+
+* Example - AdServer
+Let’s think about an online ad system - when a user clicks on an advertisement you want to very quickly redirect them to the target of the ad, but at the same time you need to collect the fact that the click has happened so that you can charge the advertiser. 
+
+.image ad_server_click.svg
+
+* Example - Image thumbnail
+
+.background image_thumbnail.png 
+.html image_thumbnail.html
+
+
+* Offerings
+- AWS lambda (2015)
+- Google Cloud Functions
+- Azure Functions
+
+
+* Resources
+- lambdash
+- Openstack
+- serverless
+- aws (https://aws.amazon.com/documentation/lambda/)
