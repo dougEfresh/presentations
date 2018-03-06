@@ -9,14 +9,15 @@ dchimento@outbrain.com
 https://www.dougchimento.com/presentations/serverless
 
 
-* Agenda
+* Contents
 - What?
 - Evolution
+- AWS Lambda
 - Internals
 - Examples
-- Pitfalls
+- Pitfalls/Gotchas
 (Still trying to figure out the order)
-: this is a note
+
 
 
 * What does serverless mean?
@@ -114,10 +115,11 @@ You can also do a dry run invocations
 base64 --decode
 
 
-* Oprations details
+* Internals
 - Limits
 - OS & specs
 - Environment
+- Logging
 
 
 * Limits
