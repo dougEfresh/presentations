@@ -1,0 +1,32 @@
+# Chef nodes
+nodes/
+
+# IDEs
+.idea/
+
+# Node Dependencies
+**/node_modules
+
+# Python test results
+nose2-junit.xml
+.coverage
+htmlcov/
+tmp/
+
+# Python: Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Mac DS_Stores
+.DS_Store
+
+# Zip files
+*.zip
+*.gz
+
+env_defaults.js
+
+venv/
+
+*~
+
+.travis*

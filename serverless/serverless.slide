@@ -81,7 +81,7 @@ resources required by that code
 .image southpark.png 400 800
 
 * I code therefore I think
-.code example1.go
+.code -numbers example1.go
 
 * How do I deploy?
 - Build/Compile code
@@ -197,7 +197,7 @@ Total charges = Compute charges + Request charges = $18.34 + $0.40 = $18.74 per 
 * Examples
 
 * Show me the code
-.code example2.go
+.code -numbers example2.go
 
 * Example - AdServer
 Let’s think about an online ad system - when a user clicks on an advertisement you want to very quickly redirect them to the target of the ad, but at the same time you need to collect the fact that the click has happened so that you can charge the advertiser. 
