@@ -5,15 +5,15 @@ Tags: serverless, lambda, aws
 
 Douglas Chimento
 Outbrain Inc.
-dchimento@gmail.com
-https://www.dougchimento.com
+dchimento@outbrain.com
+https://www.dougchimento.com/presentations/serverless
 
 
 * Agenda
 - What?
 - Evolution
-- Examples
 - Internals
+- Examples
 - Pitfalls
 (Still trying to figure out the order)
 : this is a note
@@ -67,6 +67,12 @@ resources required by that code
 - Go
 - C#
 
+* Lambda in action
+(reformat)
+.background lambda_in_action.png
+.html lambda_in_action.html
+
+
 * How do I use it?
 - Pick a language (please no java)
 - Import AWS SDK dependency
@@ -109,34 +115,62 @@ base64 --decode
 
 
 * Oprations details
-**Limits
-**OS
-**Env
+- Limits
+- OS & specs
+- Environment
+
 
 * Limits
 .html limits.html
 
-* Execution OS
-
--Linux kernel 4.9.75-25.55.amzn1.x86_64
+* OS
+-Linux kernel *4.9.75-25.55.amzn1.x86_64*
 -AMI (os image) [[https://console.aws.amazon.com/ec2/v2/home#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2][amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2]]
--2x Xeon E5-2680 v2 @ 2.80GHz (vulneable to meltdown/spectre)
+-2x *Xeon* E5-2680 v2 @ 2.80GHz (vulneable to meltdown/spectre)
 -Most likely runs in docker containers
-
-* Summary thus far
+.image linux.png 100 100
+.image docker.png  100 100
 
 
 * Env Part 1
+(reformat)
+[[https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html][Aws docs]]
 .html env1.html
 
 * Env Part 2
+(reformat)
 .html env2.html
 
-* Pricing 
+* Logging
+(more details and screen shots)
+- CloudWatch
+
+* Bottom line - What's really going on?
+- The unzipped file of your code is on some local storage
+- Some docker contain *mounts* that code and runs something like this:
+  #!/bin/bash
+  ...
+  set enviroment variables
+  set up logger
+  set up metrics
+  etc
+  ... 
+  /usr/bin/timeout 300s \
+    docker run -t -i --rm  --env-file lambda.env --workdir /var/task \
+      --volume /path/to/code:/var/task --memory 512  amazonlinux:2017.03 \
+      lambda-function-wrapper.sh
+  ...
+  capture exit code
+  clean up
+  and of course bill! 
+
+
+* Pricing
+(reformat)
 .html pricing.html
 
 * Pricing Example
-
+(reformat)
 If you allocated 512MB of memory to your function, executed it 3 million times in one month, and it ran for 1 second each time, your charges would be calculated as follows:
 Monthly compute charges
 
@@ -157,44 +191,10 @@ Monthly request charges = 2M * $0.2/M = $0.40
 Total monthly charges
 Total charges = Compute charges + Request charges = $18.34 + $0.40 = $18.74 per month
 
-* Bottom line - What's really going on?
 
-  #!/bin/bash
-  ...
-  set enviroment variables
-  set up logger
-  set up metrics
-  etc
-  ... 
-  /usr/bin/timeout 300s \
-    docker run -t -i --rm  --env-file lambda.env --workdir /var/task \
-      --volume /path/to/code:/var/task --memory 512  amazonlinux:2017.03 \
-      lambda-function-wrapper.sh
-  ...
-  capture exit code
-  clean up
-  and of course bill! 
+* Examples
 
-* Evolution
-- Physical Servers
-- VMs
-- Containers
-- Serverless
-
-
-* Serverless runs on functions
-
-- Functions are the unit of deployment and scale
-- Skip .....
-
-
-* Lambda in action
-
-.background lambda_in_action.png
-.html lambda_in_action.html
-
-
-* Show me the code II
+* Show me the code
 .code example2.go
 
 * Example - AdServer
@@ -203,13 +203,28 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 .image ad_server_click.svg
 
 * Example - Image thumbnail
-
+(reformat)
 .background image_thumbnail.png 
 .html image_thumbnail.html
 
+* Best Paractices
+- Code as infrasturcture 
+- Function alias
+- Alerts (billing)
+- Testing procedures
+
+* Gotchas
+- Logging
+- Too many functions
+- Permissions
+- Default no internet
+
+* The future and ecosystems
+(TODO)
 
 * Resources
 - lambdash
 - Openstack
 - serverless
 - aws (https://aws.amazon.com/documentation/lambda/)
+
