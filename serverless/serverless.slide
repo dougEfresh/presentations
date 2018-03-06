@@ -27,10 +27,17 @@ https://www.dougchimento.com
 - FaaS - Function as as service
 - Bass - Backend as as service
 
+
+* Evolution
+bare metal -> vitrual machines -> containers -> *serverless*
+(Use diagram with Icons ..etc)
+
+
 * Offerings
 - AWS lambda (2015)
 - Google Cloud Functions
 - Azure Functions
+(Add links)
 
 * What is AWS Lambda?
  AWS Lambda is an *event-driven* compute service that runs code in response to events and automatically manages the compute resources required by that code
