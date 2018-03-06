@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t dougefresh/presentation-serverless:latest .
+docker build -t dougefresh/presentations:latest .
