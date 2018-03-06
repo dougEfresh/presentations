@@ -15,10 +15,13 @@ https://www.dougchimento.com
 - Examples
 - Internals
 - Pitfalls
+(Still trying to figure out the order)
 : this is a note
+
+
 * What does serverless mean?
 
-- No Servers to provision or manage
+- No servers to provision or manage
 - Scale with usage
 - Built in fault-tolerance
 - Nerver pay for idle/unused capacity
@@ -40,13 +43,10 @@ bare metal -> vitrual machines -> containers -> *serverless*
 (Add links)
 
 * What is AWS Lambda?
- AWS Lambda is an *event-driven* compute service that runs code in response to events and automatically manages the compute resources required by that code
- Supports:
- -NodeJs
- -Python
- -Java (???)
- -Go
- -C#
+AWS Lambda is an *event-driven* compute service that runs code
+in response to events and automatically manages the compute
+resources required by that code
+
 
 * Which events?
 - Manual
@@ -59,6 +59,13 @@ bare metal -> vitrual machines -> containers -> *serverless*
 - S3
 - SNS
 - AutoScalling
+
+* Language Support
+- NodeJs
+- Python
+- Java (???)
+- Go
+- C#
 
 * How do I use it?
 - Pick a language (please no java)
@@ -89,10 +96,16 @@ bare metal -> vitrual machines -> containers -> *serverless*
     --function-name lambdash-function-XINM2V7BQ5I8   \
     --log-type Tail \
     --payload '{"cmd": "echo Hello World"}'
+    
+  {
+    "LogResult": "U1RBUlQgUmVxdWVzdElkOiAyMjg2Njg5My0yMTg5LTExZTgtOTIxZS1lZjAwNDVjNzRkMzEgVmVyc2lvbjogJExBVEVTVApFTkQgUmVxdWVzdElkOiAyMjg2Njg5My0yMTg5LTExZTgtOTIxZS1lZjAwNDVjNzRkMzEKUkVQT1JUIFJlcXVlc3RJZDogMjI4NjY4OTMtMjE4OS0xMWU4LTkyMWUtZWYwMDQ1Yzc0ZDMxCUR1cmF0aW9uOiAzMDQuMDIgbXMJQmlsbGVkIER1cmF0aW9uOiA0MDAgbXMgCU1lbW9yeSBTaXplOiAxMjggTUIJTWF4IE1lbW9yeSBVc2VkOiAzOSBNQgkK", 
+    "ExecutedVersion": "$LATEST", 
+    "StatusCode": 200
+  }
 
-You can also do a dry run invocation
+You can also do a dry run invocations
 *Note output log is base64 encoded
-`base64 --decode`
+base64 --decode
 
 
 * Oprations details
