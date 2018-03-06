@@ -51,13 +51,12 @@ https://www.dougchimento.com
 * How do I deploy?
 - Build/Compile code
 - Create zip with all dependencies
-- Upload zip to s3
 - Use AWS console or AWS CLI to create lambda
 
   aws lambda create-function \ 
     --region us-west-2 \
     --function-name lambdafn \
-    --zip-file s3://bucket/lambda.zip \
+    --zip-file lambda.zip \
     --handler main.helloword \
     --runtime go1.x  \
 
@@ -73,8 +72,55 @@ https://www.dougchimento.com
 * Limits
 .html limits.html
 
+* Execution OS
+
+-Linux kernel 4.9.75-25.55.amzn1.x86_64
+-AMI (os image) [[https://console.aws.amazon.com/ec2/v2/home#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2][amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2]]
+-Most likely runs in docker containers
+
+* Env Part 1
+.html env1.html
+
+* Env Part 2
+.html env2.html
+
 * Pricing 
-.html limits.html
+.html pricing.html
+
+* Pricing Example
+
+If you allocated 512MB of memory to your function, executed it 3 million times in one month, and it ran for 1 second each time, your charges would be calculated as follows:
+Monthly compute charges
+
+The monthly compute price is $0.00001667 per GB-s and the free tier provides 400,000 GB-s.
+
+Total compute (seconds) = 3M * (1s) = 3,000,000 seconds
+
+Total compute (GB-s) = 3,000,000 * 512MB/1024 = 1,500,000 GB-s
+
+Total compute – Free tier compute = Monthly billable compute GB- s
+
+1,500,000 GB-s – 400,000 free tier GB-s = 1,100,000 GB-s
+
+Monthly compute charges = 1,100,000 * $0.00001667 = $18.34
+
+ 
+
+Monthly request charges
+
+The monthly request price is $0.20 per 1 million requests and the free tier provides 1M requests per month.
+Total requests – Free tier requests = Monthly billable requests
+
+3M requests – 1M free tier requests = 2M Monthly billable requests
+
+Monthly request charges = 2M * $0.2/M = $0.40
+
+ 
+
+Total monthly charges
+Total charges = Compute charges + Request charges = $18.34 + $0.40 = $18.74 per month
+
+
 
 * Internals 
 - lambdash
