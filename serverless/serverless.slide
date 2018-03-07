@@ -6,7 +6,7 @@ Tags: serverless, lambda, aws
 Douglas Chimento
 Outbrain Inc.
 dchimento@outbrain.com
-https://www.dougchimento.com/presentations/serverless
+https://presentations.dougchimento.com/serverless/serverless.slide
 
 
 * Contents
@@ -55,6 +55,7 @@ It is *STATELESS* and is *terminated* after completion.
 .html lambda_in_action.html
 
 * Which events?
+.background events.png
 - Manual
 - API Gateway (HTTP requests)
 - CloudFormation
@@ -149,11 +150,12 @@ You can also do a dry run invocations
       --volume /path/to/code:/var/task --memory 512  amazonlinux:2017.03 \
       lambda-function-wrapper.sh
   ...
-
 - Capture exit code
 - Clean up
 - Bill!
 
+* Invocation Golang
+.code -numbers start.go
 
 * Pricing
 - Requests
@@ -166,31 +168,28 @@ Execution duration is charge based upon your lambda memory definition
 If your lambda definition is *1024* *MB* of mem but you only use *128* *MB*
 you will be _billed_ for 1024 MB
 
+*$0.00001667* For Every GB-Second
+*400,000* GB-Seconds per month free
+
 
 #.html pricing.html
 
 * Pricing Example
-(reformat)
-If you allocated 512MB of memory to your function, executed it 3 million times in one month, and it ran for 1 second each time, your charges would be calculated as follows:
-Monthly compute charges
+If you allocated *512MB* of memory to your function, executed it 3 million times in one month, and it ran for 1 second each time, your charges would be calculated as follows:
 
-The monthly compute price is $0.00001667 per GB-s and the free tier provides 400,000 GB-s.
-
-Total compute (seconds) = 3M * (1s) = 3,000,000 seconds
-Total compute (GB-s) = 3,000,000 * 512MB/1024 = 1,500,000 GB-s
+- Monthly compute/duration charges
+The monthly compute price is $0.00001667 per GB-s
+Total compute (GB-s) = 3M * (1s) * 512MB/1024 = 1,500,000 GB-s
 Total compute – Free tier compute = Monthly billable compute GB- s
-1,500,000 GB-s – 400,000 free tier GB-s = 1,100,000 GB-s
-Monthly compute charges = 1,100,000 * $0.00001667 = $18.34
+1,500,000 GB-s – 400,000 GB-s = 1,100,000 GB-s
+Monthly compute charges = 1,100,000 * $0.00001667 = *$18.34*
 
-Monthly request charges
-The monthly request price is $0.20 per 1 million requests and the free tier provides 1M requests per month.
-Total requests – Free tier requests = Monthly billable requests
-3M requests – 1M free tier requests = 2M Monthly billable requests
-Monthly request charges = 2M * $0.2/M = $0.40
+- Monthly request charges
+Total requests – Free tier requests * 0.2/M = Monthly billable requests
+Monthly request charges = 3M-1M * $0.2/M = *$0.40*
 
-Total monthly charges
-Total charges = Compute charges + Request charges = $18.34 + $0.40 = $18.74 per month
-
+Compute charges + Request charges = Total charges
+$18.34 + $0.40 = *$18.74* per month
 
 * Examples
 
@@ -203,12 +202,11 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 .image ad_server_click.svg
 
 * Example - Image thumbnail
-(reformat)
-.background image_thumbnail.png 
+.background image_thumbnail.png
 .html image_thumbnail.html
 
-* Best Paractices
-- Code as infrasturcture 
+* Best Practices
+- Code as infrastructure
 - Function alias
 - Alerts (billing)
 - Testing procedures
@@ -228,3 +226,4 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 - serverless
 - aws (https://aws.amazon.com/documentation/lambda/)
 [[https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html][Aws docs]]
+https://eu-central-1.console.aws.amazon.com/lambda/home?region=eu-central-1#/home
