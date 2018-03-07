@@ -48,6 +48,12 @@ AWS Lambda is an *event-driven* compute service that runs code
 in response to events and automatically manages the compute
 resources required by that code
 
+It is *stateless* and is *terminated* after completion.
+
+* Lambda in action
+(reformat)
+.background lambda_in_action.png
+.html lambda_in_action.html
 
 * Which events?
 - Manual
@@ -60,19 +66,6 @@ resources required by that code
 - S3
 - SNS
 - AutoScalling
-
-* Language Support
-- NodeJs
-- Python
-- Java (???)
-- Go
-- C#
-
-* Lambda in action
-(reformat)
-.background lambda_in_action.png
-.html lambda_in_action.html
-
 
 * How do I use it?
 - Pick a language (please no java)
