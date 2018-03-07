@@ -10,19 +10,34 @@
      font-size:26px;font-family:Times;color:#000000;
      left:506px;
     }
-	.ft44{font-size:37px;font-family:Times;color:#000000;}
+	.ft44{font-size:35px;font-family:Times;color:#000000;}
  .inner {
    /*position:relative;width:1440px;height:810px;*/
  }
+ .title {
+  position:absolute;
+  margin: 0;
+  white-space: nowrap;
+  font-weight: bold;
+  top: 169px;
+ }
+
+#cloud {
+ position:absolute;
+ top: 500px;
+ background: black;
+ left: 750px;
+ width: 200px;
+ z-index: 1;
+}
 </style>
 </head>
 <body vlink="blue" link="blue">
 <!--<div id="page4-div" style="position:relative;width:1440px;height:810px;">-->
 <div class="inner" >
- <p style="position:absolute;top:159px;left:160px;white-space:nowrap" class="ft44"><b>EVENT SOURCE</b></p>
- <p style="position:absolute;top:149px;left:506px;white-space:nowrap" class="ft41"><b>FUNCTION</b></p>
- <p style="position:absolute;top:159px;left:700px;white-space:nowrap" class="ft41"><b>SERVICES</b></p>
-
+ <p style="left:120px;"  class="ft41 title">EVENT SOURCE</p>
+ <p style="left:450px;"  class="ft41 title">FUNCTION</p>
+ <p style="left:750px;"  class="ft41 title">SERVICES</p>
  <p style="position:absolute;top:367px;left:30px;white-space:nowrap" class="ft42">Changes&#160;in&#160;</p>
  <p style="position:absolute;top:396px;left:30px;white-space:nowrap" class="ft42">data&#160;state</p>
  <p style="position:absolute;top:459px;left:30px;white-space:nowrap" class="ft42">Requests&#160;to&#160;</p>
@@ -34,7 +49,9 @@
 <p style="position:absolute;top:483px;white-space:nowrap" class="ft43">Java</p>
 <p style="position:absolute;top:517px;white-space:nowrap" class="ft43">C#</p>
 <p style="position:absolute;top:550px;white-space:nowrap" class="ft43">GO</p>
+ <div id="cloud">
 
+ </div>
 </div>
 </body>
 </html>

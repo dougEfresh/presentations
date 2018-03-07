@@ -48,10 +48,9 @@ AWS Lambda is an *event-driven* compute service that runs code
 in response to events and automatically manages the compute
 resources required by that code
 
-It is *stateless* and is *terminated* after completion.
+It is *STATELESS* and is *terminated* after completion.
 
 * Lambda in action
-(reformat)
 .background lambda_in_action.png
 .html lambda_in_action.html
 
@@ -84,12 +83,12 @@ It is *stateless* and is *terminated* after completion.
   aws lambda create-function \ 
     --region us-west-2 \
     --function-name lambdafn \
-    --zip-file lambda.zip \
+    --zip-file mycode.zip \
     --handler main.helloword \
     --runtime go1.x  \
 
 * How do I invoke?
-- AWS console or AWS cli
+AWS console or AWS cli
 
   aws lambda invoke \
     --invocation-type RequestResponse \
@@ -104,8 +103,9 @@ It is *stateless* and is *terminated* after completion.
   }
 
 You can also do a dry run invocations
-*Note output log is base64 encoded
-base64 --decode
+*Note* output log is base64 encoded
+
+  base64 --decode
 
 
 * Internals
@@ -119,22 +119,16 @@ base64 --decode
 .html limits.html
 
 * OS
--Linux kernel *4.9.75-25.55.amzn1.x86_64*
--AMI (os image) [[https://console.aws.amazon.com/ec2/v2/home#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2][amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2]]
--2x *Xeon* E5-2680 v2 @ 2.80GHz (vulneable to meltdown/spectre)
--Most likely runs in docker containers
+- Linux kernel *4.9*.75-25.55.amzn1.x86_64
+- AMI (disk image) [[https://console.aws.amazon.com/ec2/v2/home#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2][amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2]]
+- 2x *Xeon* E5-2680 2.80GHz
+- Most likely runs in docker containers
 .image linux.png 100 100
 .image docker.png  100 100
 
 
-* Env Part 1
-(reformat)
-[[https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html][Aws docs]]
+* Environment
 .html env1.html
-
-* Env Part 2
-(reformat)
-.html env2.html
 
 * Logging
 (more details and screen shots)
@@ -142,7 +136,7 @@ base64 --decode
 
 * Bottom line - What's really going on?
 - The unzipped file of your code is on some local storage
-- Some docker contain *mounts* that code and runs something like this:
+- Some docker container *mounts* that code and runs something like this:
   #!/bin/bash
   ...
   set enviroment variables
@@ -155,14 +149,25 @@ base64 --decode
       --volume /path/to/code:/var/task --memory 512  amazonlinux:2017.03 \
       lambda-function-wrapper.sh
   ...
-  capture exit code
-  clean up
-  and of course bill! 
+
+- Capture exit code
+- Clean up
+- Bill!
 
 
 * Pricing
-(reformat)
-.html pricing.html
+- Requests
+- Duration
+
+*1,000,000* Free (as in beer) requests per month
+*$0.20* per 1,000,000 request after ($0.0000002 per request)
+
+Execution duration is charge based upon your lambda memory definition
+If your lambda definition is *1024* *MB* of mem but you only use *128* *MB*
+you will be _billed_ for 1024 MB
+
+
+#.html pricing.html
 
 * Pricing Example
 (reformat)
@@ -222,4 +227,4 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 - Openstack
 - serverless
 - aws (https://aws.amazon.com/documentation/lambda/)
-
+[[https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html][Aws docs]]
