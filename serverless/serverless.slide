@@ -8,40 +8,78 @@ Outbrain Inc.
 dchimento@outbrain.com
 https://presentations.dougchimento.com/serverless/serverless.slide
 
+* What we want - The 80/20 Rule
 
-* Contents
-- What?
-- Evolution
-- AWS Lambda
-- Internals
-- Examples
-- Pitfalls/Gotchas
-(Still trying to figure out the order)
-
-
+- We want a simple way to deploy our code
+- We don't want to worry about scaling
+- We don't care about the OS
+- We want automatic fault tolerance
+- Most of the time our code executes quickly (< 100ms)
+- Responds to HTTP events (requests)
 
 * What does serverless mean?
-
 - No servers to provision or manage
 - Scale with usage
 - Built in fault-tolerance
-- Nerver pay for idle/unused capacity
+- Never pay for idle/unused capacity
+- Event driven
 
 * Lexicon
-- FaaS - Function as as service
-- Bass - Backend as as service
+- Paas - Platform as a Service
+- Baas - Backend as a service
+- FaaS - Function as a service
+
+The combination of these concepts are *serverless*
+
+* _
+.background evolution.jpg
+
+* _
+.background componenets.png
+
+* A view on Serverless
+.html twitter.html
+
+* Mental shift
+- Microservices to the extreme
+- Async is (mostly) irrelevant
+- Focus on one task and do it well
+- Deployments are simple artifacts (e.g. zip files)
+- Event driven programming
+
+* Extreme Microservices
+- Multiple endpoints in one service
+  public class UserService {
+
+     public ComposableFuture<Response> createUser(Request request) {
+            // Do stuff
+     }
+
+     public ComposableFuture<Response> getUser(Request request) {
+            // Do stuff
+     }
+
+     public ComposableFuture<Response> updateUser(Request request) {
+            // Do stuff
+     }
+  }
+
+- In servervless you break up *endpoints* (functions) into isolated deployments
 
 
-* Evolution
-bare metal -> vitrual machines -> containers -> *serverless*
-(Use diagram with Icons ..etc)
+* Fault Tolerance
+- Each "request" is protected; Running in its own linux namespaces (e.g. docker)
+- Fatal failures do not bring down a service or a server (out of disk space)
+- No restarting; No OutOfMemory; No GC pauses that affects other requests
 
+In Serverless, there are no *thread* *pools*, you are bounder by the number of available servers.
 
 * Offerings
+
 - AWS lambda (2015)
 - Google Cloud Functions
 - Azure Functions
-(Add links)
+- IBM openwhisk
 
 * What is AWS Lambda?
 AWS Lambda is an *event-driven* compute service that runs code
@@ -227,3 +265,5 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 - aws (https://aws.amazon.com/documentation/lambda/)
 [[https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html][Aws docs]]
 https://eu-central-1.console.aws.amazon.com/lambda/home?region=eu-central-1#/home
+https://github.com/open-lambda/open-lambda
+https://www.ibm.com/cloud/functions
