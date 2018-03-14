@@ -1,22 +1,24 @@
 Gettin' Jiggy with Serverless 
 
-A closer look at world of serverless
-Tags: serverless, lambda, aws
+A closer look at the world of Serverless architecture
 
 Douglas Chimento
 Outbrain Inc.
 dchimento@outbrain.com
-https://presentations.dougchimento.com/serverless/serverless.slide
+https://presentations.dougchimento.com/
 
-* What we want - The 80/20 Rule
-
-- We want a simple way to deploy our code
-- We want to focus on core biz logic
-- We don't want to worry about scaling
+* What we want
+- Focus on core biz logic
+- Automatic scaling 
 - We don't care about the OS
-- We want automatic fault tolerance
+- Simple way to deploy our code
+
+*The* *80/20* *Rule*
+
 - Most of the time our code executes quickly (< 100ms)
 - Responds to HTTP events (requests)
+- Latency is not a large concern
+- Simple CRUD operations
 
 * What does serverless mean?
 - No servers to provision or manage
@@ -24,13 +26,12 @@ https://presentations.dougchimento.com/serverless/serverless.slide
 - Built in fault-tolerance
 - Never pay for idle/unused capacity
 - Event driven
-: No Idele servers
 : Serverless should be called event driven architecture 
 
 * Lexicon
 - Paas - Platform as a Service
-- Baas - Backend as a service
-- FaaS - Function as a service
+- Baas - Backend as a Service
+- FaaS - Function as a Service
 
 The combination of these concepts are *serverless*
 
@@ -47,7 +48,7 @@ The combination of these concepts are *serverless*
 
 * Mental shift
 - Microservices to the extreme
-- Stateless to the extreme
+- Stateless (ephemeral) to the extreme
 - Async is (mostly) irrelevant
 - Focus on one task and do it well
 - Event driven programming
@@ -63,19 +64,16 @@ The combination of these concepts are *serverless*
    ComposableFuture<Response> getUser(Request request) {
           // Do stuff
     }
-
-   ComposableFuture<Response> updateUser(Request request) {
-          // Do stuff
-    }
   }
 
 - In servervless you break up *endpoints* (functions) into isolated deployments
 
 
 * Fault Tolerance
-- Each "request" is protected; Running in its own linux namespaces (e.g. docker)
+- Each "event" is protected; Running in its own linux namespaces (e.g. docker)
 - Fatal failures do not bring down a service or a server (out of disk space)
-- No restarting; No OutOfMemory; No GC pauses that affects other requests
+- No restarting
+- No OutOfMemory or GC pauses that affects other requests
 
 In Serverless, there are no *thread* *pools*, you are bound by the number of available servers.
 
@@ -113,6 +111,7 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 - Capture exit code
 - Send logs & Bill!
 : Recall tweet
+: End with "lets's look at some code"
 
 * I code therefore I think
 .code -numbers example1.go
@@ -120,12 +119,16 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 - compile, zip, upload
 - register an "event" to trigger this code
 
-But what's going on with `lambda.Start()` ?
+What's going on with `lambda.Start()` ?
 
-* Warm/Cold invocation
+* Hot/Warm/Cold invocation
 .code -numbers start.go
 - RPC server
-- Docker maps `_SERVER_PORT` on *host* server into the container
+- Maps `_SERVER_PORT` on *host* server into the container
+: Hot Docker image is accepting connections
+: Warm Docker is paused 
+: Cold Docker is being brough up
+: Recall that the docker image is running with an exposed port
 
 * Putting it all together 
 : Nginix public HTTPS server 
@@ -135,155 +138,65 @@ But what's going on with `lambda.Start()` ?
 : Invoker - spins up docker & unit of execution for the chosen Action
 .image whisk.png 600 1000
 
-* What is AWS Lambda?
-AWS Lambda is an *event-driven* compute service that runs code
-in response to events and automatically manages the compute
-resources required by that code
-
-It is *STATELESS* and is *terminated* after completion.
-
-* Which events?
-.background events.png
-- Manual
-- API Gateway (HTTP requests)
-- CloudFormation
-- Code Commit
-- Congito
-- DynamoDB
-- Kinesis
-- S3
-- SNS
-- AutoScalling
-
-* How do I use it?
-- Pick a language (please no java)
-- Import AWS SDK dependency
-- Write a handler
+* Review
+- Just write your function! 
+- Package your code and upload
+- Register your "event" to your *function*
 .image southpark.png 400 800
 
+* A personal experience with Serverless
+I have a bare metal server in a DC. Hackers were constantly trying to SSH into my server. I was seeing a lot of these messages:
 
-* How do I deploy?
-- Build/Compile code
-- Create zip with all dependencies
-- Use AWS console or AWS CLI to create lambda
+  Failed password for invalid user hacker from 212.143.121...
 
-  aws lambda create-function \ 
-    --region us-west-2 \
-    --function-name lambdafn \
-    --zip-file mycode.zip \
-    --handler main.helloword \
-    --runtime go1.x  \
+Why and what password are these hackers trying to use? Is there a way to capture the password? 
+Let's grep OpenSSH source code
 
-* How do I invoke?
-AWS console or AWS cli
+  egrep -l 'passwd|password' *.c
+  ...
+  auth-pam.c
+  auth-passwd.c
+  auth-rhosts.c
+  auth-shadow.c
+  ...
 
-  aws lambda invoke \
-    --invocation-type RequestResponse \
-    --function-name lambdash-function-XINM2V7BQ5I8   \
-    --log-type Tail \
-    --payload '{"cmd": "echo Hello World"}'
-    
-  {
-    "LogResult": "U1RBUlQgUmVxdWVzdElkOiAyMjg2Njg5My0yMTg5LTExZTgtOTIxZS1lZjAwNDVjNzRkMzEgVmVyc2lvbjogJExBVEVTVApFTkQgUmVxdWVzdElkOiAyMjg2Njg5My0yMTg5LTExZTgtOTIxZS1lZjAwNDVjNzRkMzEKUkVQT1JUIFJlcXVlc3RJZDogMjI4NjY4OTMtMjE4OS0xMWU4LTkyMWUtZWYwMDQ1Yzc0ZDMxCUR1cmF0aW9uOiAzMDQuMDIgbXMJQmlsbGVkIER1cmF0aW9uOiA0MDAgbXMgCU1lbW9yeSBTaXplOiAxMjggTUIJTWF4IE1lbW9yeSBVc2VkOiAzOSBNQgkK", 
-    "ExecutedVersion": "$LATEST", 
-    "StatusCode": 200
+hmmm, let's look at auth-passwd.c 
+
+* Passwd pot - A honeypot for passwd logins
+  
+So I hacked [[https://github.com/openssh/openssh-portable/compare/master...dougEfresh:sshd-passwd-pot#diff-7a1dfcdf16db2cb5024ea0c3b057c4d8R203][auth-passwd.c]] to log passwords
+  
+  Mar  6 14:13:00 2e6474da0e40 sshd[28474]: 
+  { "time": 1520345580398, 
+  "user": "root", "passwd": "hacker", 
+  "remoteAddr": "42.7.26.61", "remotePort": 37084, 
+  "remoteName": "42.7.26.61", "remoteVersion": "OpenSSH_6.2...", 
+  "application": "OpenSSH_7.4p1", "protocol": "ssh"
   }
+   
+But I want to do some data analytics on these passwords. 
 
-You can also do a dry run invocations
-*Note* output log is base64 encoded
+- Which country is attacking me?
+- What is the most common username/password?
+- What software are they using to hack?
 
-  base64 --decode
-
-
-* Internals
-- Limits
-- OS & specs
-- Environment
-- Logging
-
-
-* Limits
-.html limits.html
-
-* OS
-- Linux kernel *4.9*.75-25.55.amzn1.x86_64
-- AMI (disk image) [[https://console.aws.amazon.com/ec2/v2/home#Images:visibility=public-images;search=amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2][amzn-ami-hvm-2017.03.1.20170812-x86_64-gp2]]
-- 2x *Xeon* E5-2680 2.80GHz
-- Most likely runs in docker containers
-.image linux.png 100 100
-.image docker.png  100 100
-
-
-* Environment
-.html env1.html
-
-* Logging
-(more details and screen shots)
-- CloudWatch
-
-
-
-* Pricing
-- Requests
-- Duration
-
-*1,000,000* Free (as in beer) requests per month
-*$0.20* per 1,000,000 request after ($0.0000002 per request)
-
-Execution duration is charge based upon your lambda memory definition
-If your lambda definition is *1024* *MB* of mem but you only use *128* *MB*
-you will be _billed_ for 1024 MB
-
-*$0.00001667* For Every GB-Second
-*400,000* GB-Seconds per month free
-
-
-#.html pricing.html
-
-* Pricing Example
-If you allocated *512MB* of memory to your function, executed it 3 million times in one month, and it ran for 1 second each time, your charges would be calculated as follows:
-
-- Monthly compute/duration charges
-The monthly compute price is $0.00001667 per GB-s
-Total compute (GB-s) = 3M * (1s) * 512MB/1024 = 1,500,000 GB-s
-Total compute – Free tier compute = Monthly billable compute GB- s
-1,500,000 GB-s – 400,000 GB-s = 1,100,000 GB-s
-Monthly compute charges = 1,100,000 * $0.00001667 = *$18.34*
-
-- Monthly request charges
-Total requests – Free tier requests * 0.2/M = Monthly billable requests
-Monthly request charges = 3M-1M * $0.2/M = *$0.40*
-
-Compute charges + Request charges = Total charges
-$18.34 + $0.40 = *$18.74* per month
-
-* Examples
-
-* Show me the code
-.code -numbers example2.go
-
-* Best Practices
-- Code as infrastructure
-- Function alias
-- Alerts (billing)
-- Testing procedures
+* *
+.background passwdpot.png 
 
 * Gotchas
-- Logging
-- Too many functions
-- Permissions
-- Default no internet
+- Logging and debugging can be very difficult 
+- Your code is ephemeral on a massive server farm
+- Tracing requests from frontend to mulitple serverless calls is a nightmare
+- Functions end up simple, integration becomes hard
+What if *one* of those hundreds of servers is misconfigured (wrong firewall rules) ? 
 
-* The future and ecosystems
-(TODO)
+* Questions ?
 
 * Resources
-- lambdash
-- Openstack
-- serverless
-- aws (https://aws.amazon.com/documentation/lambda/)
-[[https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html][Aws docs]]
-https://eu-central-1.console.aws.amazon.com/lambda/home?region=eu-central-1#/home
-https://github.com/open-lambda/open-lambda
-https://www.ibm.com/cloud/functions
-https://github.com/apache/incubator-openwhisk
+- [[https://aws.amazon.com/documentation/lambda/][AWS]]
+- [[http://openwhisk.incubator.apache.org/][OpenWhisk]]
+- [[https://www.openstack.org/software/][OpenStack]]
+- [[https://serverless.com/][Serverless]]
+- [[https://github.com/alestic/lambdash][lambdash]]
+- [[https://github.com/dougEfresh/passwd-pot/blob/master/lambda/handler.go][PasswdPot]]
+- [[https://github.com/dougEfresh/sshd-passwd-pot][OpenSSH Passwd Hack]]
