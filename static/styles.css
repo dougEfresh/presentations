@@ -50,8 +50,6 @@
     margin-left: -450px;
     margin-top: -350px;
 
-    padding: 40px 60px;
-
     box-sizing: border-box;
     -o-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -70,6 +68,12 @@
     -o-transition: -o-transform .3s ease-out;
     -moz-transition: -moz-transform .3s ease-out;
     -webkit-transition: -webkit-transform .3s ease-out;
+
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 35px;
+    padding-right: 35px;
+
   }
   .slides.layout-widescreen > article {
     margin-left: -550px;
@@ -258,7 +262,7 @@
   color: black;
   text-shadow: 0 1px 1px rgba(0, 0, 0, .1);
 
-  font-size: 26px;
+  font-size: 35px;
   line-height: 36px;
 
   letter-spacing: -1px;
@@ -355,7 +359,7 @@ div.code {
   margin-top: 20px;
   margin-bottom: 20px;
   overflow: hidden;
-
+  font-size: 200%;
   background: rgb(240, 240, 240);
   border: 1px solid rgb(224, 224, 224);
 }
@@ -364,8 +368,8 @@ pre {
   padding: 0;
 
   font-family: 'Droid Sans Mono', 'Courier New', monospace;
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 30px;
+  line-height: 32px;
   letter-spacing: -1px;
 
   color: black;
@@ -531,4 +535,11 @@ figcaption {
   -o-border-radius: 10px;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
+}
+.Tweet-text[dir="ltr"] {
+   font-size: 27px;
+}
+
+p[Tweet-text], .e-entry-title{
+  font-size: 27px;
 }

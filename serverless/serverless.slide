@@ -1,6 +1,6 @@
 Gettin' Jiggy with Serverless 
 
-A closer look at AWS lambdas
+A closer look at world of serverless
 Tags: serverless, lambda, aws
 
 Douglas Chimento
@@ -11,6 +11,7 @@ https://presentations.dougchimento.com/serverless/serverless.slide
 * What we want - The 80/20 Rule
 
 - We want a simple way to deploy our code
+- We want to focus on core biz logic
 - We don't want to worry about scaling
 - We don't care about the OS
 - We want automatic fault tolerance
@@ -23,6 +24,8 @@ https://presentations.dougchimento.com/serverless/serverless.slide
 - Built in fault-tolerance
 - Never pay for idle/unused capacity
 - Event driven
+: No Idele servers
+: Serverless should be called event driven architecture 
 
 * Lexicon
 - Paas - Platform as a Service
@@ -33,35 +36,37 @@ The combination of these concepts are *serverless*
 
 * _
 .background evolution.jpg
+: Ops and Finance mostly benefit from VM
 
-* _
-.background componenets.png
+* Componets of serverless
+.background lambda_in_action.png
+.html lambda_in_action.html
 
 * A view on Serverless
 .html twitter.html
 
 * Mental shift
 - Microservices to the extreme
+- Stateless to the extreme
 - Async is (mostly) irrelevant
 - Focus on one task and do it well
-- Deployments are simple artifacts (e.g. zip files)
 - Event driven programming
 
 * Extreme Microservices
-- Multiple endpoints in one service
+- Traditional style -  Multiple endpoints in one service
   public class UserService {
 
-     public ComposableFuture<Response> createUser(Request request) {
-            // Do stuff
-     }
+   ComposableFuture<Response> createUser(Request request) {
+         // Do stuff
+    }
 
-     public ComposableFuture<Response> getUser(Request request) {
-            // Do stuff
-     }
+   ComposableFuture<Response> getUser(Request request) {
+          // Do stuff
+    }
 
-     public ComposableFuture<Response> updateUser(Request request) {
-            // Do stuff
-     }
+   ComposableFuture<Response> updateUser(Request request) {
+          // Do stuff
+    }
   }
 
 - In servervless you break up *endpoints* (functions) into isolated deployments
@@ -72,14 +77,63 @@ The combination of these concepts are *serverless*
 - Fatal failures do not bring down a service or a server (out of disk space)
 - No restarting; No OutOfMemory; No GC pauses that affects other requests
 
-In Serverless, there are no *thread* *pools*, you are bounder by the number of available servers.
+In Serverless, there are no *thread* *pools*, you are bound by the number of available servers.
 
 * Offerings
-
 - AWS lambda (2015)
 - Google Cloud Functions
 - Azure Functions
 - IBM openwhisk
+
+* Examples 
+
+
+* Example - AdServer
+Let’s think about an online ad system - when a user clicks on an advertisement you want to very quickly redirect them to the target of the ad, but at the same time you need to collect the fact that the click has happened so that you can charge the advertiser. 
+
+.image ad_server_click.svg
+
+* Example - Image thumbnail
+.background image_thumbnail.png
+.html image_thumbnail.html
+
+
+* What's really going on?
+- Your code and dependencies are on local storage
+- A generic docker container *mounts* that code and runs something like this:
+  #!/bin/bash
+  # set enviroment variables (especially Main-Class)
+  # set up logger, metrics
+  ... 
+  docker run -p :$_SERVER_PORT \ 
+    --env-file faas.env \
+    --volume /local/path/to/code:/var/task --memory 512 \
+    amazonlinux:2017.03 bootstrap-main-wrapper.sh
+  ...
+- Capture exit code
+- Send logs & Bill!
+: Recall tweet
+
+* I code therefore I think
+.code -numbers example1.go
+
+- compile, zip, upload
+- register an "event" to trigger this code
+
+But what's going on with `lambda.Start()` ?
+
+* Warm/Cold invocation
+.code -numbers start.go
+- RPC server
+- Docker maps `_SERVER_PORT` on *host* server into the container
+
+* Putting it all together 
+: Nginix public HTTPS server 
+: Controller - gatekeeper of the system orchestrator
+: CouchDB  - credentials, metadata, namespaces, and the definitions of actions, triggers, and rules
+: Consul - State management, service discovery
+: Invoker - spins up docker & unit of execution for the chosen Action
+.image whisk.png 600 1000
 
 * What is AWS Lambda?
 AWS Lambda is an *event-driven* compute service that runs code
@@ -87,10 +141,6 @@ in response to events and automatically manages the compute
 resources required by that code
 
 It is *STATELESS* and is *terminated* after completion.
-
-* Lambda in action
-.background lambda_in_action.png
-.html lambda_in_action.html
 
 * Which events?
 .background events.png
@@ -111,8 +161,6 @@ It is *STATELESS* and is *terminated* after completion.
 - Write a handler
 .image southpark.png 400 800
 
-* I code therefore I think
-.code -numbers example1.go
 
 * How do I deploy?
 - Build/Compile code
@@ -173,27 +221,7 @@ You can also do a dry run invocations
 (more details and screen shots)
 - CloudWatch
 
-* Bottom line - What's really going on?
-- The unzipped file of your code is on some local storage
-- Some docker container *mounts* that code and runs something like this:
-  #!/bin/bash
-  ...
-  set enviroment variables
-  set up logger
-  set up metrics
-  etc
-  ... 
-  /usr/bin/timeout 300s \
-    docker run -t -i --rm  --env-file lambda.env --workdir /var/task \
-      --volume /path/to/code:/var/task --memory 512  amazonlinux:2017.03 \
-      lambda-function-wrapper.sh
-  ...
-- Capture exit code
-- Clean up
-- Bill!
 
-* Invocation Golang
-.code -numbers start.go
 
 * Pricing
 - Requests
@@ -234,15 +262,6 @@ $18.34 + $0.40 = *$18.74* per month
 * Show me the code
 .code -numbers example2.go
 
-* Example - AdServer
-Let’s think about an online ad system - when a user clicks on an advertisement you want to very quickly redirect them to the target of the ad, but at the same time you need to collect the fact that the click has happened so that you can charge the advertiser. 
-
-.image ad_server_click.svg
-
-* Example - Image thumbnail
-.background image_thumbnail.png
-.html image_thumbnail.html
-
 * Best Practices
 - Code as infrastructure
 - Function alias
@@ -267,3 +286,4 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 https://eu-central-1.console.aws.amazon.com/lambda/home?region=eu-central-1#/home
 https://github.com/open-lambda/open-lambda
 https://www.ibm.com/cloud/functions
+https://github.com/apache/incubator-openwhisk

@@ -1,11 +1,13 @@
 package main
 import "github.com/aws/aws-lambda-go/lambda"
 
-func HelloWorld() (string, error) {
-   return "Hello, Lambda!" , nil
+type MessageEvent struct {Msg string}
+
+func MessageHandler(event MessageEvent) (string, error) {
+   return "Your message is  " + event.Msg  , nil
 }
 
 func main() {
-  lambda.Start(HelloWorld)
+  lambda.Start(MessageHandler)
 }
 
