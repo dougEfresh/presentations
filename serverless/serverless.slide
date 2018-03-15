@@ -180,6 +180,8 @@ But I want to do some data analytics on these passwords.
 - What is the most common username/password?
 - What software are they using to hack?
 
+I want to send this data to a central datastore
+
 * *
 .background passwdpot.png 
 
