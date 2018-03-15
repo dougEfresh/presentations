@@ -7,26 +7,12 @@ Outbrain Inc.
 dchimento@outbrain.com
 https://presentations.dougchimento.com/
 
-* What we want
-- Focus on core biz logic
-- Automatic scaling 
-- We don't care about the OS
-- Simple way to deploy our code
-
-*The* *80/20* *Rule*
-
-- Most of the time our code executes quickly (< 100ms)
-- Responds to HTTP events (requests)
-- Latency is not significant concern
-- Simple CRUD operations
-
-: Has anyone experience HTTP 500 errors because your service was overloaded?
-
 * What does Serverless mean?
 - No servers to provision or manage
 - Scale with usage
-- Built in fault-tolerance
-- Never pay for idle/unused capacity
+- Pay per request and length of request
+- Built in fault tolerance
+- No running server
 - Event driven
 : Serverless should be called event driven architecture 
 
@@ -35,15 +21,31 @@ https://presentations.dougchimento.com/
 - BaaS - Backend as a Service
 - FaaS - Function as a Service
 
-The combination of these concepts are *erverless*
+The combination of these concepts are *Serverless*
 
-* _
-.background evolution.jpg
-: Ops and Finance mostly benefit from VM
+* What we want
+- Focus on core biz logic
+- Automatic scaling 
+- We don't care about the OS
+- Simple way to deploy our code
+
+* What Serverless is trying to solve - 80/20 Rule
+
+- Respond to events (e.g. HTTP requests)
+- Latency is not significant concern
+- Simple CRUD operations
+- Code that executes quickly (< 100ms)
+
+
+: Has anyone experience HTTP 500 errors because your service was overloaded?
 
 * Components of Serverless
 .background lambda_in_action.png
 .html lambda_in_action.html
+
+* _
+.background evolution.jpg
+: Ops and Finance mostly benefit from VM
 
 * Key Requirement
 .html twitter.html
@@ -60,11 +62,13 @@ The combination of these concepts are *erverless*
 - Stateless (ephemeral) to the extreme
 - Async is (mostly) irrelevant
 - Focus on one task and do it well
-- Specific resource (memory) allocation
+- Understanding of memory resource per event
 - Event driven programming
+.image extreme.jpg 300 400
 
 : Talk more about async later
 : You shift to event resource allocation
+: Utilize memory 
 
 * Extreme Microservices
 - Traditional style -  Multiple endpoints in one service
@@ -83,19 +87,20 @@ The combination of these concepts are *erverless*
 - Distinct deployments for _creating_ and _getting_ users 
 
 : Take your time with this slide
+: Resuse of code. Same artifact can be deployed but you change the handler 
 
 * Fault Tolerance
-- Each "event" is protected; Running in its own linux namespaces (e.g. docker)
-- Fatal failures do not bring down a service or a server (out of disk space)
+- Each "event" is protected; Running in its own process (e.g. docker)
 - No restarting
-- No OutOfMemory or GC pauses that affects other requests
+- Critical failures do not bring down a service or a server (OutOfMemory, GC Pauses, NPE)
+- Number of Servers (Instances) == Number of Threads
+- DB Connections Pools for your function
 
-In Serverless, there are no *thread* *pools*, you are bound by the number of available servers.
-
-Number of Servers (Instances) == Number of Threads
+In Serverless, there are no *thread* *pools*, you are bounded by the number of available servers.
 
 : As a consequence of isoloated/distinct deployments you get Automatic fault tolerance
 : Mention Async again
+: Automatic 
 
 * Examples 
 
@@ -108,24 +113,6 @@ Let’s think about an online ad system - when a user clicks on an advertisement
 * Example - Image thumbnail
 .background image_thumbnail.png
 .html image_thumbnail.html
-
-
-* What's really going on?
-- Your code and dependencies are on local storage
-- A generic docker container *mounts* that code and runs something like this:
-  #!/bin/bash
-  # set environment variables (especially Main-Class)
-  # set up logger, metrics
-  ... 
-  docker run -p :$_SERVER_PORT \ 
-    --env-file faas.env \
-    --volume /local/path/to/code:/var/task --memory 512 \
-    amazonlinux:2017.03 bootstrap-main-wrapper.sh
-  ...
-- Capture exit code
-- Send logs & Bill!
-: Recall tweet - Docker is a good fit to bring up servers quickly
-: End with "lets's look at some code"
 
 * I code therefore I think
 .code -numbers example1.go
@@ -141,32 +128,29 @@ What's going on with `lambda.Start()` ?
 .code -numbers start.go
 - RPC server
 - Maps `_SERVER_PORT` on *host* server into the container
-: Hot Docker image is accepting connections
-: Warm Docker is paused 
-: Cold Docker is being brough up
-: Recall that the docker image is running with an exposed port
-
-* Putting it all together 
-: Nginix public HTTPS server 
-: Controller - gatekeeper of the system orchestrator
-: CouchDB  - credentials, metadata, namespaces, and the definitions of actions, triggers, and rules
-: Consul - State management, service discovery
-: Invoker - spins up docker & unit of execution for the chosen Action
-.image whisk.png 600 1000
+: Hot Docker image is accepting connections Warm Docker is paused, Cold Docker is being brough up
+: Connection Pools for your event handler
 
 * Review
-- Just write your function! 
-- Package your code and upload
+- Just write your function to handle a specific event! 
+- Package your code and then "upload"
 - Register your "event" to your *function*
 .image southpark.png 400 800
+
+* Gotchas
+- Logging and debugging can be very difficult 
+- Your code is ephemeral on a massive server farm
+- Tracing requests from frontend to multiple Serverless calls is a nightmare
+- Functions end up simple, infrastructure becomes more complex
+
+What if *one* of those hundreds of servers is configured incorrectly (wrong firewall rules) ?
 
 * A personal experience with Serverless
 I have a bare metal server in a DC. Hackers were constantly trying to SSH into my server. I was seeing a lot of these messages:
 
   Failed password for invalid user hacker from 212.143.121...
 
-Why? What password are these hackers trying to use?
-Is there a way to capture the password?
+Why? Is there a way to capture the password?
 Let's grep OpenSSH source code
 
   egrep -l 'passwd|password' *.c
@@ -201,13 +185,6 @@ Solution: Send logins to a central data store
 * *
 .background passwdpot.png 
 
-* Gotchas
-- Logging and debugging can be very difficult 
-- Your code is ephemeral on a massive server farm
-- Tracing requests from frontend to multiple Serverless calls is a nightmare
-- Functions end up simple, infrastructure becomes more complex
-What if *one* of those hundreds of servers is configured incorrectly (wrong firewall rules) ?
-
 * Questions ?
 
 * Resources
@@ -218,3 +195,29 @@ What if *one* of those hundreds of servers is configured incorrectly (wrong fire
 - [[https://github.com/alestic/lambdash][lambdash]]
 - [[https://github.com/dougEfresh/passwd-pot/blob/master/lambda/handler.go][PasswdPot]]
 - [[https://github.com/dougEfresh/sshd-passwd-pot][OpenSSH Passwd Hack]]
+
+* What's really going on?
+- Your code and dependencies are on local storage
+- A generic docker container *mounts* that code and runs something like this:
+  #!/bin/bash
+  # set environment variables (especially Main-Class)
+  # set up logger, metrics
+  ... 
+  docker run -p :$_SERVER_PORT \ 
+    --env-file faas.env \
+    --volume /local/path/to/code:/var/task --memory 512 \
+    amazonlinux:2017.03 bootstrap-main-wrapper.sh
+  ...
+- Capture exit code
+- Send logs & Bill!
+: Recall tweet - Docker is a good fit to bring up servers quickly
+: End with "lets's look at some code"
+
+* Putting it all together 
+: Nginix public HTTPS server 
+: Controller - gatekeeper of the system orchestrator
+: CouchDB  - credentials, metadata, namespaces, and the definitions of actions, triggers, and rules
+: Consul - State management, service discovery
+: Invoker - spins up docker & unit of execution for the chosen Action
+.image whisk.png 600 1000
+
