@@ -14,11 +14,13 @@ https://presentations.dougchimento.com/
 - Simple way to deploy our code
 
 *The* *80/20* *Rule*
+
 - Most of the time our code executes quickly (< 100ms)
 - Responds to HTTP events (requests)
 - Latency is not significant concern
 - Simple CRUD operations
-: Has anyone experience HTTP 500 errors because your service was overloaded? 
+
+: Has anyone experience HTTP 500 errors because your service was overloaded?
 
 * What does Serverless mean?
 - No servers to provision or manage
@@ -33,13 +35,13 @@ https://presentations.dougchimento.com/
 - BaaS - Backend as a Service
 - FaaS - Function as a Service
 
-The combination of these concepts are *serverless*
+The combination of these concepts are *erverless*
 
 * _
 .background evolution.jpg
 : Ops and Finance mostly benefit from VM
 
-* Components of serverless
+* Components of Serverless
 .background lambda_in_action.png
 .html lambda_in_action.html
 
@@ -93,6 +95,7 @@ In Serverless, there are no *thread* *pools*, you are bound by the number of ava
 Number of Servers (Instances) == Number of Threads
 
 : As a consequence of isoloated/distinct deployments you get Automatic fault tolerance
+: Mention Async again
 
 * Examples 
 
@@ -201,7 +204,7 @@ Solution: Send logins to a central data store
 * Gotchas
 - Logging and debugging can be very difficult 
 - Your code is ephemeral on a massive server farm
-- Tracing requests from frontend to multiple serverless calls is a nightmare
+- Tracing requests from frontend to multiple Serverless calls is a nightmare
 - Functions end up simple, infrastructure becomes more complex
 What if *one* of those hundreds of servers is configured incorrectly (wrong firewall rules) ?
 
