@@ -191,10 +191,9 @@ So I hacked [[https://github.com/openssh/openssh-portable/compare/master...dougE
 But I want to do some data analytics on these passwords. 
 
 - Which country is attacking me?
-- What is the most common username/password?
-- What software are they using to hack?
+- What are the most common usernames and passwords?
 
-I want to send this data to a central data store
+Solution: Send logins to a central data store
 
 * *
 .background passwdpot.png 
