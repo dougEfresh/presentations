@@ -32,7 +32,7 @@ The combination of these concepts are *Serverless*
 * What Serverless is trying to solve - 80/20 Rule
 
 - Respond to events (e.g. HTTP requests)
-- Latency is not significant concern
+- Latency is not a significant concern
 - Simple CRUD operations
 - Code that executes quickly (< 100ms)
 
