@@ -39,13 +39,13 @@ The combination of these concepts are *Serverless*
 
 : Has anyone experience HTTP 500 errors because your service was overloaded?
 
-* Components of Serverless
-.background lambda_in_action.png
-.html lambda_in_action.html
-
 * _
 .background evolution.jpg
 : Ops and Finance mostly benefit from VM
+
+* Components of Serverless
+.background lambda_in_action.png
+.html lambda_in_action.html
 
 * Key Requirement
 .html twitter.html
